@@ -6,23 +6,22 @@ import ControlPanel, { type Controls } from "./ControlPanel";
 import PhoneMockup from "./PhoneMockup";
 
 const DEFAULT_CONTROLS: Controls = {
-  tela: "revisao-retirada",
-  entrega: "retirada",
-  logado: true,
-  pixSelecionado: true,
-  lojaEncontrada: true,
+  temCep: true,
+  escolheuEntrega: true,
+  tipoEntrega: "retirada",
+  multiplosPacotes: false,
 };
 
 function buildCheckoutUrl(controls: Controls): string {
-  let step = controls.tela;
-  if (controls.entrega === "envio" && step === "revisao-retirada") step = "revisao-envio";
-  if (controls.entrega === "retirada" && step === "revisao-envio") step = "revisao-retirada";
+  const step =
+    controls.escolheuEntrega && controls.tipoEntrega === "envio"
+      ? "revisao-envio"
+      : "revisao-retirada";
 
   const params = new URLSearchParams({
-    entrega: controls.entrega,
-    logado: String(controls.logado),
-    pix: String(controls.pixSelecionado),
-    loja: String(controls.lojaEncontrada),
+    entrega: controls.escolheuEntrega ? controls.tipoEntrega : "nenhuma",
+    cep: String(controls.temCep),
+    pacotes: String(controls.multiplosPacotes),
     _preview: "1",
   });
 
