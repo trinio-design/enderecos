@@ -1,75 +1,43 @@
 "use client";
 
 import type { Dispatch, SetStateAction } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
-export type StepKey =
-  | "loading"
-  | "revisao-retirada"
-  | "revisao-envio"
-  | "otp"
-  | "carrinho"
-  | "trocar-loja"
-  | "busca-geolocalizacao"
-  | "opcoes-retirada"
-  | "trocar-frete"
-  | "alterar-frete"
-  | "alterar-endereco";
-
 export type Controls = {
-  tela: StepKey;
-  entrega: "retirada" | "envio";
-  logado: boolean;
-  pixSelecionado: boolean;
-  lojaEncontrada: boolean;
+  temCep: boolean;
+  escolheuEntrega: boolean;
+  tipoEntrega: "retirada" | "envio";
+  multiplosPacotes: boolean;
 };
 
-// ─── Grupos de telas ──────────────────────────────────────────────────────────
+// ─── Produtos mock ────────────────────────────────────────────────────────────
 
-const FLOW_GROUPS: {
-  label: string;
-  color: string;
-  steps: { key: StepKey; label: string }[];
-}[] = [
+const PRODUCTS = [
   {
-    label: "Principal",
-    color: "bg-violet-100 text-violet-700",
-    steps: [
-      { key: "loading", label: "Loading" },
-      { key: "otp", label: "OTP" },
-      { key: "carrinho", label: "Carrinho" },
-    ],
+    id: 1,
+    name: "Tênis Nike Air Max 270",
+    price: "R$ 599,90",
+    img: "https://picsum.photos/seed/sneaker42/56/56",
   },
   {
-    label: "Retirada",
-    color: "bg-orange-100 text-orange-700",
-    steps: [
-      { key: "revisao-retirada", label: "Revisão retirada" },
-      { key: "opcoes-retirada", label: "Opções de retirada" },
-      { key: "trocar-loja", label: "Trocar loja" },
-      { key: "busca-geolocalizacao", label: "Busca geoloc." },
-    ],
+    id: 2,
+    name: "Moletom Oversized Off-White",
+    price: "R$ 349,90",
+    img: "https://picsum.photos/seed/hoodie07/56/56",
   },
   {
-    label: "Envio",
-    color: "bg-blue-100 text-blue-700",
-    steps: [
-      { key: "revisao-envio", label: "Revisão envio" },
-      { key: "trocar-frete", label: "Trocar frete" },
-      { key: "alterar-frete", label: "Alterar frete" },
-      { key: "alterar-endereco", label: "Alterar endereço" },
-    ],
+    id: 3,
+    name: "Carteira de Couro Reserva",
+    price: "R$ 129,90",
+    img: "https://picsum.photos/seed/wallet19/56/56",
   },
 ];
 
-// ─── Componente de row de switch ──────────────────────────────────────────────
+// ─── Switch row ───────────────────────────────────────────────────────────────
 
 function SwitchRow({
   id,
@@ -78,6 +46,7 @@ function SwitchRow({
   labelOff,
   checked,
   onCheckedChange,
+  indent = false,
 }: {
   id: string;
   label: string;
@@ -85,9 +54,14 @@ function SwitchRow({
   labelOff: string;
   checked: boolean;
   onCheckedChange: (v: boolean) => void;
+  indent?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4">
+    <div
+      className={`flex items-center justify-between gap-4 ${
+        indent ? "ml-4 border-l-2 border-border pl-4" : ""
+      }`}
+    >
       <div className="flex flex-col gap-0.5">
         <Label htmlFor={id} className="text-sm font-medium text-foreground">
           {label}
@@ -116,6 +90,7 @@ export default function ControlPanel({
 
   return (
     <div className="flex h-full flex-col overflow-y-auto bg-card">
+
       {/* Header */}
       <div className="px-5 pb-4 pt-5">
         <div className="flex items-center gap-2">
@@ -134,41 +109,26 @@ export default function ControlPanel({
 
       <Separator />
 
-      {/* Telas */}
-      <div className="flex flex-col gap-1 px-3 py-4">
-        <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          Tela
+      {/* Produtos */}
+      <div className="flex flex-col gap-1 px-5 py-4">
+        <p className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          Produtos
         </p>
-
-        {FLOW_GROUPS.map((group) => (
-          <div key={group.label} className="mb-2">
-            <div className="mb-1.5 flex items-center gap-2 px-2">
-              <Badge
-                variant="outline"
-                className={cn("h-5 border-0 px-2 text-[10px]", group.color)}
-              >
-                {group.label}
-              </Badge>
+        {PRODUCTS.map((p) => (
+          <div key={p.id} className="flex items-center gap-3 rounded-lg py-1.5">
+            <img
+              src={p.img}
+              alt={p.name}
+              width={48}
+              height={48}
+              className="rounded-md object-cover"
+            />
+            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+              <span className="truncate text-[13px] font-medium text-foreground">
+                {p.name}
+              </span>
+              <span className="text-xs text-muted-foreground">{p.price}</span>
             </div>
-            {group.steps.map((step) => {
-              const active = controls.tela === step.key;
-              return (
-                <Button
-                  key={step.key}
-                  variant={active ? "secondary" : "ghost"}
-                  size="sm"
-                  onClick={() => set("tela", step.key)}
-                  className={cn(
-                    "mb-0.5 h-8 w-full justify-start text-[13px]",
-                    active
-                      ? "font-semibold text-foreground"
-                      : "font-normal text-muted-foreground"
-                  )}
-                >
-                  {step.label}
-                </Button>
-              );
-            })}
           </div>
         ))}
       </div>
@@ -182,39 +142,44 @@ export default function ControlPanel({
         </p>
 
         <SwitchRow
-          id="entrega"
-          label="Tipo de entrega"
-          labelOn="Retirada em loja"
-          labelOff="Envio para endereço"
-          checked={controls.entrega === "retirada"}
-          onCheckedChange={(v) => set("entrega", v ? "retirada" : "envio")}
+          id="cep"
+          label="Colocou CEP no carrinho?"
+          labelOn="Sim"
+          labelOff="Não"
+          checked={controls.temCep}
+          onCheckedChange={(v) => set("temCep", v)}
         />
 
         <SwitchRow
-          id="logado"
-          label="Usuário logado"
-          labelOn="Sim — dados preenchidos"
-          labelOff="Não — precisa fazer login"
-          checked={controls.logado}
-          onCheckedChange={(v) => set("logado", v)}
+          id="escolheu"
+          label="Escolheu entrega ou retirada?"
+          labelOn="Sim"
+          labelOff="Não"
+          checked={controls.escolheuEntrega}
+          onCheckedChange={(v) => set("escolheuEntrega", v)}
         />
 
-        <SwitchRow
-          id="pix"
-          label="Pagamento selecionado"
-          labelOn="Pix selecionado"
-          labelOff="Cartão selecionado"
-          checked={controls.pixSelecionado}
-          onCheckedChange={(v) => set("pixSelecionado", v)}
-        />
+        {controls.escolheuEntrega && (
+          <SwitchRow
+            id="tipo"
+            label="Tipo escolhido"
+            labelOn="Retirada em loja"
+            labelOff="Envio para endereço"
+            checked={controls.tipoEntrega === "retirada"}
+            onCheckedChange={(v) =>
+              set("tipoEntrega", v ? "retirada" : "envio")
+            }
+            indent
+          />
+        )}
 
         <SwitchRow
-          id="loja"
-          label="Loja encontrada"
-          labelOn="Sim — lojas próximas"
-          labelOff="Não — nenhuma loja"
-          checked={controls.lojaEncontrada}
-          onCheckedChange={(v) => set("lojaEncontrada", v)}
+          id="pacotes"
+          label="Múltiplos pacotes?"
+          labelOn="Sim"
+          labelOff="Não"
+          checked={controls.multiplosPacotes}
+          onCheckedChange={(v) => set("multiplosPacotes", v)}
         />
       </div>
     </div>
