@@ -24,9 +24,9 @@ export default function Loading() {
     <div className="flex min-h-screen flex-col px-4 py-6">
       <Header total="R$ 670,10" quantity={1} />
 
-      <div className="flex flex-1 flex-col items-center justify-center gap-10 px-6 text-center">
+      <div className="flex flex-1 flex-col items-center justify-center gap-10 text-center">
         <div className="spinner" role="status" aria-label="Carregando" />
-        <p className="text-[20px] font-medium leading-7 text-black">
+        <p className="w-[273px] text-[20px] font-normal leading-7 text-black">
           Carregando seus dados salvos anteriormente...
         </p>
       </div>
