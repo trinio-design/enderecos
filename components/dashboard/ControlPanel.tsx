@@ -160,17 +160,27 @@ export default function ControlPanel({
         />
 
         {controls.escolheuEntrega && (
-          <SwitchRow
-            id="tipo"
-            label="Tipo escolhido"
-            labelOn="Retirada em loja"
-            labelOff="Envio para endereço"
-            checked={controls.tipoEntrega === "retirada"}
-            onCheckedChange={(v) =>
-              set("tipoEntrega", v ? "retirada" : "envio")
-            }
-            indent
-          />
+          <div className="ml-4 flex flex-col gap-2 border-l-2 border-border pl-4">
+            <span className="text-xs font-medium text-muted-foreground">Tipo escolhido</span>
+            {(["retirada", "envio"] as const).map((tipo) => (
+              <label
+                key={tipo}
+                className="flex cursor-pointer items-center gap-2.5"
+              >
+                <input
+                  type="radio"
+                  name="tipoEntrega"
+                  value={tipo}
+                  checked={controls.tipoEntrega === tipo}
+                  onChange={() => set("tipoEntrega", tipo)}
+                  className="h-4 w-4 accent-foreground"
+                />
+                <span className="text-sm text-foreground">
+                  {tipo === "retirada" ? "Retirada em loja" : "Envio para endereço"}
+                </span>
+              </label>
+            ))}
+          </div>
         )}
 
         <SwitchRow
