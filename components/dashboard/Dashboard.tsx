@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import ControlPanel, { type Controls } from "./ControlPanel";
 import PhoneMockup from "./PhoneMockup";
 
@@ -11,32 +11,48 @@ const DEFAULT_CONTROLS: Controls = {
   multiplosPacotes: false,
 };
 
-function buildCheckoutUrl(controls: Controls): string {
-  const step =
-    controls.escolheuEntrega && controls.tipoEntrega === "envio"
-      ? "revisao-envio"
-      : "revisao-retirada";
-
-  const params = new URLSearchParams({
+function buildControlParams(controls: Controls): URLSearchParams {
+  return new URLSearchParams({
     entrega: controls.escolheuEntrega ? controls.tipoEntrega : "nenhuma",
     cep: String(controls.temCep),
     pacotes: String(controls.multiplosPacotes),
     _preview: "1",
   });
-
-  return `/checkout/${step}?${params.toString()}`;
 }
 
-const INITIAL_URL = "/checkout/primeira-tela";
+function buildCheckoutUrl(controls: Controls): string {
+  const step =
+    controls.escolheuEntrega && controls.tipoEntrega === "envio"
+      ? "revisao-envio"
+      : "revisao-retirada";
+  return `/checkout/${step}?${buildControlParams(controls).toString()}`;
+}
+
+function buildFirstScreenUrl(controls: Controls): string {
+  return `/checkout/primeira-tela?${buildControlParams(controls).toString()}`;
+}
 
 export default function Dashboard() {
   const [controls, setControls] = useState<Controls>(DEFAULT_CONTROLS);
+  const [currentFrame, setCurrentFrame] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const flowStarted = useRef(false);
 
+  useEffect(() => {
+    function handleMessage(e: MessageEvent) {
+      if (e.data?.type === "checkout-frame") {
+        setCurrentFrame(e.data.step);
+      }
+    }
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
+
   const handleIframeLoad = useCallback(() => {
     try {
-      const pathname = iframeRef.current?.contentWindow?.location.pathname;
+      const pathname = iframeRef.current?.contentWindow?.location.pathname ?? "";
+      const step = pathname.split("/").filter(Boolean).pop() ?? null;
+      setCurrentFrame(step);
       if (pathname && pathname !== "/checkout/primeira-tela") {
         flowStarted.current = true;
       }
@@ -48,8 +64,10 @@ export default function Dashboard() {
   const handleControlsChange = useCallback((updater: React.SetStateAction<Controls>) => {
     setControls((prev) => {
       const next = typeof updater === "function" ? updater(prev) : updater;
-      if (flowStarted.current && iframeRef.current) {
-        iframeRef.current.src = buildCheckoutUrl(next);
+      if (iframeRef.current) {
+        iframeRef.current.src = flowStarted.current
+          ? buildCheckoutUrl(next)
+          : buildFirstScreenUrl(next);
       }
       return next;
     });
@@ -57,10 +75,11 @@ export default function Dashboard() {
 
   const handleReiniciar = useCallback(() => {
     flowStarted.current = false;
+    setCurrentFrame(null);
     if (iframeRef.current) {
-      iframeRef.current.src = INITIAL_URL;
+      iframeRef.current.src = buildFirstScreenUrl(controls);
     }
-  }, []);
+  }, [controls]);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-background">
@@ -73,12 +92,21 @@ export default function Dashboard() {
       {/* ── Área principal ─────────────────────────────────── */}
       <main className="flex flex-1 flex-col overflow-hidden">
 
+        {/* Frame label */}
+        <div className="flex h-8 shrink-0 items-center justify-end px-5">
+          {currentFrame && (
+            <span className="font-mono text-[10px] text-muted-foreground">
+              {currentFrame}
+            </span>
+          )}
+        </div>
+
         {/* Mockup centralizado */}
-        <div className="flex flex-1 items-center justify-center overflow-hidden bg-background p-8">
+        <div className="flex flex-1 items-center justify-center overflow-hidden bg-background px-8 pb-8">
           <PhoneMockup>
             <iframe
               ref={iframeRef}
-              src={INITIAL_URL}
+              src={buildFirstScreenUrl(DEFAULT_CONTROLS)}
               className="h-full w-full border-0 bg-white"
               title="Checkout preview"
               onLoad={handleIframeLoad}

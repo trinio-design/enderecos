@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useCheckoutRouter } from "@/hooks/useCheckoutRouter";
 
 import Footer from "../Footer";
 import Header from "../Header";
@@ -13,7 +13,7 @@ import { ArrowLeftCircleIcon, PinIcon, SearchIcon } from "../icons";
  * Tela — Opções de retirada (toggle Envio/Retirada, busca por CEP, lista de lojas).
  */
 export default function OpcoesRetirada() {
-  const router = useRouter();
+  const router = useCheckoutRouter();
   const [mode, setMode] = useState("retirada");
   const [store, setStore] = useState(0);
   const [cep, setCep] = useState("CEP 34859-340");
@@ -93,7 +93,7 @@ export default function OpcoesRetirada() {
       {/* CTA */}
       <button
         type="button"
-        onClick={() => router.push("/checkout/otp")}
+        onClick={() => router.push("/checkout/revisao-retirada")}
         className="flex h-12 w-full items-center justify-center rounded bg-black text-[16px] font-bold text-white"
       >
         Continuar

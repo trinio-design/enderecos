@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import Footer from "../Footer";
 import Header from "../Header";
+import { getNextStepUrl, isFlowId } from "@/lib/flows";
 
 /**
  * Tela 1 — Loading.
@@ -12,13 +13,21 @@ import Header from "../Header";
  */
 export default function Loading() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const flowId = searchParams.get("flowId");
+  const stepIdx = Number(searchParams.get("stepIdx") ?? "0");
+  const nextUrl =
+    isFlowId(flowId)
+      ? getNextStepUrl(flowId, stepIdx, searchParams)
+      : "/checkout/revisao-retirada";
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push("/checkout/revisao-retirada");
-    }, 2200);
+      router.push(nextUrl ?? "/checkout/revisao-retirada");
+    }, 1000);
     return () => clearTimeout(timer);
-  }, [router]);
+  }, [router, nextUrl]);
 
   return (
     <div className="flex min-h-screen flex-col px-4 py-6">

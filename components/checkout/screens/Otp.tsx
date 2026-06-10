@@ -1,27 +1,39 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-import CtaButton from "../CtaButton";
 import Footer from "../Footer";
 import Header from "../Header";
 import { RefreshIcon, WhatsappIcon } from "../icons";
+import { getNextStepUrl, isFlowId } from "@/lib/flows";
 
 /**
  * Tela — OTP (confirmação de telefone via WhatsApp).
  */
 export default function Otp() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [code, setCode] = useState<string[]>(Array(6).fill(""));
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const flowId = searchParams.get("flowId");
+  const stepIdx = Number(searchParams.get("stepIdx") ?? "0");
+  const nextUrl =
+    isFlowId(flowId)
+      ? getNextStepUrl(flowId, stepIdx, searchParams)
+      : "/checkout/loading";
 
   function handleChange(index: number, value: string) {
     const digit = value.replace(/\D/g, "").slice(-1);
     const next = [...code];
     next[index] = digit;
     setCode(next);
-    if (digit && index < 5) inputs.current[index + 1]?.focus();
+    if (digit && index < 5) {
+      inputs.current[index + 1]?.focus();
+    } else if (digit && index === 5) {
+      router.push(nextUrl ?? "/checkout/loading");
+    }
   }
 
   function handleKeyDown(index: number, e: React.KeyboardEvent<HTMLInputElement>) {
@@ -29,8 +41,6 @@ export default function Otp() {
       inputs.current[index - 1]?.focus();
     }
   }
-
-  const complete = code.every((d) => d !== "");
 
   return (
     <div className="flex min-h-screen flex-col gap-8 px-4 py-6">
@@ -73,14 +83,6 @@ export default function Otp() {
             />
           ))}
         </div>
-
-        {/* CTA */}
-        <CtaButton
-          disabled={!complete}
-          onClick={() => router.push("/checkout/revisao-retirada")}
-        >
-          Continuar
-        </CtaButton>
 
         {/* Resend code */}
         <button
