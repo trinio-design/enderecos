@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useCheckoutRouter } from "@/hooks/useCheckoutRouter";
 
 import AddressBox from "../AddressBox";
 import CtaButton from "../CtaButton";
@@ -144,7 +144,7 @@ function MultipleParcels() {
  *                               + seção Múltiplos pacotes (node 4315-11235)
  */
 export default function TrocarFrete({ variant = "single" }: { variant?: Variant }) {
-  const router = useRouter();
+  const router = useCheckoutRouter();
   const [freight, setFreight] = useState(0);
   const [tab] = useState<"envio" | "retirada">("envio");
 

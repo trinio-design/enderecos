@@ -11,6 +11,7 @@ import OpcoesRetirada from "@/components/checkout/screens/OpcoesRetirada";
 import TrocarFrete from "@/components/checkout/screens/TrocarFrete";
 import AlterarFrete from "@/components/checkout/screens/AlterarFrete";
 import AlterarEndereco from "@/components/checkout/screens/AlterarEndereco";
+import AlterarEnderecoCobranca from "@/components/checkout/screens/AlterarEnderecoCobranca";
 
 export type StepKey =
   | "loading"
@@ -23,7 +24,8 @@ export type StepKey =
   | "opcoes-retirada"
   | "trocar-frete"
   | "alterar-frete"
-  | "alterar-endereco";
+  | "alterar-endereco"
+  | "alterar-endereco-cobranca";
 
 export const STEPS: Record<StepKey, ComponentType> = {
   loading: Loading,
@@ -37,6 +39,7 @@ export const STEPS: Record<StepKey, ComponentType> = {
   "trocar-frete": TrocarFrete,
   "alterar-frete": AlterarFrete,
   "alterar-endereco": AlterarEndereco,
+  "alterar-endereco-cobranca": AlterarEnderecoCobranca,
 };
 
 export const STEP_KEYS = Object.keys(STEPS) as StepKey[];

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useCheckoutRouter } from "@/hooks/useCheckoutRouter";
 
 import CtaButton from "../CtaButton";
 import Divider from "../Divider";
@@ -112,8 +113,7 @@ function ProductThumb() {
 }
 
 /** Responsible-for-pickup row */
-function PickupResponsible() {
-  const router = useRouter();
+function PickupResponsible({ onEditClick }: { onEditClick?: () => void }) {
   return (
     <div className="flex flex-col gap-2">
       <p className="text-[14px] font-semibold leading-[18px] text-black">
@@ -123,11 +123,108 @@ function PickupResponsible() {
         <span className="text-[14px] leading-[18px] text-black">Tamy Müzel</span>
         <button
           type="button"
-          onClick={() => router.push("/checkout/alterar-responsavel")}
+          onClick={onEditClick}
           aria-label="Editar responsável"
         >
           <EditIcon size={20} className="text-black" />
         </button>
+      </div>
+    </div>
+  );
+}
+
+/** User+check icon SVG */
+function UserCheckIcon({ size = 38 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 38 38"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="19" cy="13" r="7" stroke="#F79E1B" strokeWidth="2" />
+      <path
+        d="M5 33c0-7.732 6.268-14 14-14"
+        stroke="#F79E1B"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <circle cx="27" cy="29" r="6" fill="#F79E1B" />
+      <path
+        d="M24 29l2 2 4-4"
+        stroke="white"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Read-only field used inside the edit-responsible drawer */
+function ReadOnlyField({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex flex-col rounded-[4px] bg-[#f3f4f6] px-3 py-1">
+      <span className="text-[12px] font-bold leading-4 text-black">{label}</span>
+      <span className="text-[16px] font-normal leading-6 text-black">{value}</span>
+    </div>
+  );
+}
+
+/** Bottom drawer for editing the pickup responsible */
+function EditResponsibleDrawer({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col justify-end">
+      {/* Dark overlay */}
+      <div
+        className="absolute inset-0 bg-black/80"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      {/* Drawer */}
+      <div className="relative flex w-full flex-col rounded-t-[12px] bg-white">
+        {/* Drag handle */}
+        <div className="flex justify-center pb-2 pt-4">
+          <div className="h-1 w-[45px] rounded-full bg-[#e5e7eb]" />
+        </div>
+
+        {/* Content */}
+        <div className="flex flex-col gap-6 p-6">
+          {/* Orange icon */}
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#F79E1B]/16">
+            <UserCheckIcon size={38} />
+          </div>
+
+          <div className="flex flex-col gap-6">
+            <h2 className="text-[24px] font-bold leading-tight text-black">
+              Quem vai retirar o pedido?
+            </h2>
+
+            <div className="flex flex-col gap-3">
+              <ReadOnlyField label="Nome" value="JOSÉ OLIVEIRA" />
+              <ReadOnlyField label="CPF" value="093.675.113-99" />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex h-12 w-full items-center justify-center rounded-[4px] bg-black"
+            >
+              <span className="text-[16px] font-bold text-white">Atualizar</span>
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex h-12 w-full items-center justify-center rounded-[4px] bg-[#f3f4f6]"
+            >
+              <span className="text-[16px] font-bold text-black">Cancelar</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -147,8 +244,14 @@ function SecurityNote() {
 // ---------------------------------------------------------------------------
 // Variant: single pickup card (used in v=1 and v=2)
 // ---------------------------------------------------------------------------
-function SinglePickupCard({ showChooseStore }: { showChooseStore: boolean }) {
-  const router = useRouter();
+function SinglePickupCard({
+  showChooseStore,
+  onEditResponsible,
+}: {
+  showChooseStore: boolean;
+  onEditResponsible: () => void;
+}) {
+  const router = useCheckoutRouter();
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-[#e5e7eb] bg-white">
       {/* Top content */}
@@ -177,7 +280,7 @@ function SinglePickupCard({ showChooseStore }: { showChooseStore: boolean }) {
         <Divider />
 
         {/* Responsible */}
-        <PickupResponsible />
+        <PickupResponsible onEditClick={onEditResponsible} />
       </div>
 
       {/* Security note */}
@@ -205,7 +308,7 @@ function SinglePickupCard({ showChooseStore }: { showChooseStore: boolean }) {
 // ---------------------------------------------------------------------------
 // Variant: 2 pickups grouped card (v=3)
 // ---------------------------------------------------------------------------
-function TwoPickupsCard() {
+function TwoPickupsCard({ onEditResponsible }: { onEditResponsible: () => void }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-[#d6d6d6] bg-white">
       <MultiPackageHeader showPickup showDelivery={false} />
@@ -246,7 +349,7 @@ function TwoPickupsCard() {
 
           <Divider />
 
-          <PickupResponsible />
+          <PickupResponsible onEditClick={onEditResponsible} />
         </div>
       </div>
 
@@ -285,7 +388,7 @@ function PackageIcon({ size = 14, className = "" }: { size?: number; className?:
 // ---------------------------------------------------------------------------
 // Variant: mixed pickup + delivery grouped card (v=4)
 // ---------------------------------------------------------------------------
-function MixedPickupDeliveryCard() {
+function MixedPickupDeliveryCard({ onEditResponsible }: { onEditResponsible: () => void }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-[#d6d6d6] bg-white">
       <MultiPackageHeader showPickup showDelivery />
@@ -307,15 +410,7 @@ function MixedPickupDeliveryCard() {
           <ProductThumb />
 
           {/* Responsible for pickup */}
-          <div className="flex flex-col gap-2">
-            <p className="text-[14px] font-semibold leading-[18px] text-black">
-              Responsável pela retirada
-            </p>
-            <div className="flex items-center gap-2">
-              <span className="text-[14px] leading-[18px] text-black">Tamy Müzel</span>
-              <EditIcon size={20} className="text-black" />
-            </div>
-          </div>
+          <PickupResponsible onEditClick={onEditResponsible} />
         </div>
 
         <Divider />
@@ -351,7 +446,7 @@ function PaymentAndBillingSection({
 }: {
   showBillingAddress: boolean;
 }) {
-  const router = useRouter();
+  const router = useCheckoutRouter();
   const [payment, setPayment] = useState<Payment>("pix");
 
   return (
@@ -401,7 +496,7 @@ function PaymentAndBillingSection({
               Endereço de cobrança
             </p>
             <PillButton
-              onClick={() => router.push("/checkout/alterar-endereco")}
+              onClick={() => router.push("/checkout/alterar-endereco-cobranca")}
             >
               Alterar
             </PillButton>
@@ -430,11 +525,12 @@ function PaymentAndBillingSection({
  *   4 — 1 retirada + 1 entrega (múltiplos pacotes, misto)
  */
 export default function RevisaoRetirada() {
-  const router = useRouter();
+  const router = useCheckoutRouter();
   const searchParams = useSearchParams();
   const v = searchParams.get("v") ?? "1";
 
   const isMixed = v === "4";
+  const [showEditDrawer, setShowEditDrawer] = useState(false);
 
   return (
     <div className="flex min-h-screen flex-col gap-10 px-4 py-6">
@@ -492,7 +588,7 @@ export default function RevisaoRetirada() {
               </div>
               <button
                 type="button"
-                onClick={() => router.push("/checkout/alterar-endereco")}
+                onClick={() => router.push("/checkout/alterar-endereco-cobranca")}
                 aria-label="Editar endereço"
                 className="shrink-0"
               >
@@ -503,10 +599,17 @@ export default function RevisaoRetirada() {
 
           {/* Pickup / delivery card(s) */}
           {(v === "1" || v === "2") && (
-            <SinglePickupCard showChooseStore={v === "2"} />
+            <SinglePickupCard
+              showChooseStore={v === "2"}
+              onEditResponsible={() => setShowEditDrawer(true)}
+            />
           )}
-          {v === "3" && <TwoPickupsCard />}
-          {v === "4" && <MixedPickupDeliveryCard />}
+          {v === "3" && (
+            <TwoPickupsCard onEditResponsible={() => setShowEditDrawer(true)} />
+          )}
+          {v === "4" && (
+            <MixedPickupDeliveryCard onEditResponsible={() => setShowEditDrawer(true)} />
+          )}
         </section>
 
         <Divider />
@@ -522,7 +625,7 @@ export default function RevisaoRetirada() {
                 Endereço de cobrança
               </p>
               <PillButton
-                onClick={() => router.push("/checkout/alterar-endereco")}
+                onClick={() => router.push("/checkout/alterar-endereco-cobranca")}
               >
                 Alterar
               </PillButton>
@@ -545,6 +648,10 @@ export default function RevisaoRetirada() {
       <div className="mt-auto pt-2">
         <Footer showRecaptcha />
       </div>
+
+      {showEditDrawer && (
+        <EditResponsibleDrawer onClose={() => setShowEditDrawer(false)} />
+      )}
     </div>
   );
 }

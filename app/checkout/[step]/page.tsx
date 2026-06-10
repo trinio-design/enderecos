@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { STEP_KEYS, STEPS, isStepKey } from "@/lib/steps";
+import { FrameReporter } from "@/components/checkout/FrameReporter";
 
 export function generateStaticParams() {
   return STEP_KEYS.map((step) => ({ step }));
@@ -25,6 +26,7 @@ export default function CheckoutStepPage({
   if (isPreview) {
     return (
       <div className="w-full bg-white">
+        <FrameReporter step={params.step} />
         <Screen />
       </div>
     );
