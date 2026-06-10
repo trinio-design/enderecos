@@ -9,7 +9,7 @@ import Header from "../Header";
 import { RefreshIcon, WhatsappIcon } from "../icons";
 
 /**
- * Tela — OTP (confirmação de e-mail/telefone).
+ * Tela — OTP (confirmação de telefone via WhatsApp).
  */
 export default function Otp() {
   const router = useRouter();
@@ -24,6 +24,12 @@ export default function Otp() {
     if (digit && index < 5) inputs.current[index + 1]?.focus();
   }
 
+  function handleKeyDown(index: number, e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Backspace" && !code[index] && index > 0) {
+      inputs.current[index - 1]?.focus();
+    }
+  }
+
   const complete = code.every((d) => d !== "");
 
   return (
@@ -31,22 +37,25 @@ export default function Otp() {
       <Header total="R$ 599,00" quantity={1} />
 
       <div className="flex flex-1 flex-col gap-6">
+        {/* Greeting + instructions */}
         <div className="flex flex-col gap-2">
           <h1 className="text-[20px] font-bold text-black">
             Olá, tamy{" "}
             <span className="text-[12px] font-normal text-ink-300">
-              Não é você? <span className="underline">Sair</span>
+              Não é você?{" "}
+              <span className="cursor-pointer underline">Sair</span>
             </span>
           </h1>
           <p className="text-[14px] text-black">
             Digite o código enviado por Trinio® Checkout.
           </p>
           <p className="flex items-center gap-1.5 text-[14px] font-medium text-success">
-            <WhatsappIcon size={18} className="text-success" />
+            <WhatsappIcon size={18} />
             Whatsapp: 11 ****4342
           </p>
         </div>
 
+        {/* OTP inputs */}
         <div className="flex justify-between gap-2">
           {code.map((digit, i) => (
             <input
@@ -56,13 +65,16 @@ export default function Otp() {
               }}
               value={digit}
               onChange={(e) => handleChange(i, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(i, e)}
               inputMode="numeric"
               maxLength={1}
-              className="h-12 w-12 rounded-card border border-hairline text-center text-[18px] font-semibold text-black outline-none focus:border-black"
+              autoFocus={i === 0}
+              className="h-12 w-12 rounded-card border border-hairline text-center text-[18px] font-semibold text-black outline-none focus:border-black focus:ring-0"
             />
           ))}
         </div>
 
+        {/* CTA */}
         <CtaButton
           disabled={!complete}
           onClick={() => router.push("/checkout/revisao-retirada")}
@@ -70,6 +82,7 @@ export default function Otp() {
           Continuar
         </CtaButton>
 
+        {/* Resend code */}
         <button
           type="button"
           className="flex items-center justify-center gap-2 text-[13px] text-ink-300"
