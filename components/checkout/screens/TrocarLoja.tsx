@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import CtaButton from "../CtaButton";
 import Footer from "../Footer";
@@ -353,6 +353,7 @@ function Variant1Click({ router }: { router: ReturnType<typeof useRouter> }) {
 // ---------------------------------------------------------------------------
 
 function VariantGuestMixed({ router }: { router: ReturnType<typeof useRouter> }) {
+  const searchParams = useSearchParams();
   const [selected, setSelected] = useState<"economico" | "expresso" | "retirada">(
     "retirada"
   );
@@ -460,7 +461,7 @@ function VariantGuestMixed({ router }: { router: ReturnType<typeof useRouter> })
           {/* "Escolher outra loja" footer button */}
           <button
             type="button"
-            onClick={() => router.push("/checkout/trocar-loja")}
+            onClick={() => router.push(`/checkout/guest-trocar-loja?${searchParams.toString()}`)}
             className="flex items-center justify-center gap-3 border-t border-[#d6d6d6] bg-[#e5e7eb] py-3"
           >
             <StoreIcon size={18} className="text-black" />
