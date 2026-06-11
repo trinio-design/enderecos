@@ -317,6 +317,61 @@ export function CloseIcon(props: IconProps) {
   );
 }
 
+export function InfoIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M12 8v5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <circle cx="12" cy="16" r="0.9" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function PackageIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path
+        d="M3 8.5 12 4l9 4.5v7L12 20l-9-4.5v-7Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path d="M12 4v16M3 8.5l9 5 9-5" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M7.5 6.5 16.5 11" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function TruckIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path
+        d="M2 8h14v10H2V8ZM16 11h3.5L22 14.5V18h-6V11Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <circle cx="6" cy="18" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+      <circle cx="18" cy="18" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+    </svg>
+  );
+}
+
+export function WarningIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path
+        d="M12 3 2.5 20.5h19L12 3Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path d="M12 10v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <circle cx="12" cy="17" r="0.9" fill="currentColor" />
+    </svg>
+  );
+}
+
 /** Marca Trinio (gota arredondada) usada na assinatura "Compra segura". */
 export function TrinioMark({ size = 16 }: { size?: number }) {
   return (

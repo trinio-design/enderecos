@@ -6,6 +6,9 @@ const FLOWS_DEF = {
   "1click-cep-retirada-single": {
     steps: ["otp", "loading", "revisao-retirada"] as StepKey[],
   },
+  "guest-envio": {
+    steps: ["guest-email", "guest-dados", "guest-entrega", "guest-pagamento"] as StepKey[],
+  },
 } satisfies Record<string, { steps: StepKey[] }>;
 
 export type FlowId = keyof typeof FLOWS_DEF;
@@ -21,6 +24,10 @@ export function getFlowId(params: {
   flowType: "guest" | "1click";
 }): FlowId | null {
   const { cep, entrega, pacotes, flowType } = params;
+
+  if (flowType === "guest") {
+    return "guest-envio";
+  }
 
   if (
     cep === "true" &&
