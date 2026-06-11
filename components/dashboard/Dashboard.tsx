@@ -21,11 +21,15 @@ function buildControlParams(controls: Controls): URLSearchParams {
 }
 
 function buildCheckoutUrl(controls: Controls): string {
+  const params = buildControlParams(controls);
+  if (!controls.escolheuEntrega && controls.multiplosPacotes) {
+    return `/checkout/1click-2entregas?${params.toString()}`;
+  }
   const step =
     controls.escolheuEntrega && controls.tipoEntrega === "envio"
       ? "revisao-envio"
       : "revisao-retirada";
-  return `/checkout/${step}?${buildControlParams(controls).toString()}`;
+  return `/checkout/${step}?${params.toString()}`;
 }
 
 function buildFirstScreenUrl(controls: Controls): string {

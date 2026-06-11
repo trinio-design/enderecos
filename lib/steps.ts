@@ -17,6 +17,9 @@ import GuestDados from "@/components/checkout/screens/GuestDados";
 import GuestEntrega from "@/components/checkout/screens/GuestEntrega";
 import GuestPagamento from "@/components/checkout/screens/GuestPagamento";
 import GuestRetiradaEntrega from "@/components/checkout/screens/GuestRetiradaEntrega";
+import Checkout1click2Entregas from "@/components/checkout/screens/Checkout1click2Entregas";
+import Checkout1clickAlterarFrete from "@/components/checkout/screens/Checkout1clickAlterarFrete";
+import Checkout1clickAlterarRetirada from "@/components/checkout/screens/Checkout1clickAlterarRetirada";
 
 export type StepKey =
   | "loading"
@@ -36,7 +39,10 @@ export type StepKey =
   | "guest-entrega"
   | "guest-pagamento"
   | "guest-trocar-loja"
-  | "guest-retirada-entrega";
+  | "guest-retirada-entrega"
+  | "1click-2entregas"
+  | "1click-alterar-frete"
+  | "1click-alterar-retirada";
 
 export const STEPS: Record<StepKey, ComponentType> = {
   loading: Loading,
@@ -57,6 +63,9 @@ export const STEPS: Record<StepKey, ComponentType> = {
   "guest-pagamento": GuestPagamento,
   "guest-trocar-loja": TrocarLoja,
   "guest-retirada-entrega": GuestRetiradaEntrega,
+  "1click-2entregas": Checkout1click2Entregas,
+  "1click-alterar-frete": Checkout1clickAlterarFrete,
+  "1click-alterar-retirada": Checkout1clickAlterarRetirada,
 };
 
 export const STEP_KEYS = Object.keys(STEPS) as StepKey[];

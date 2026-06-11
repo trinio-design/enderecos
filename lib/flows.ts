@@ -6,6 +6,9 @@ const FLOWS_DEF = {
   "1click-cep-retirada-single": {
     steps: ["otp", "loading", "revisao-retirada"] as StepKey[],
   },
+  "1click-semcep-multiplos": {
+    steps: ["otp", "loading", "1click-2entregas"] as StepKey[],
+  },
   "guest-envio": {
     steps: ["guest-email", "guest-dados", "guest-entrega", "guest-pagamento"] as StepKey[],
   },
@@ -36,6 +39,15 @@ export function getFlowId(params: {
     flowType === "1click"
   ) {
     return "1click-cep-retirada-single";
+  }
+
+  if (
+    cep === "false" &&
+    entrega === "nenhuma" &&
+    pacotes === "true" &&
+    flowType === "1click"
+  ) {
+    return "1click-semcep-multiplos";
   }
 
   return null;
