@@ -1,0 +1,13 @@
+.optionRow {
+  transition: opacity 0.15s;
+}
+.optionRow:hover {
+  opacity: 0.6;
+}
+.optionRow:hover .arrow {
+  transform: translateX(3px);
+}
+.arrow {
+  transition: transform 0.15s;
+  flex-shrink: 0;
+}

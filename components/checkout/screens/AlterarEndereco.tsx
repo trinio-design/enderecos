@@ -95,7 +95,15 @@ export default function AlterarEndereco({ variant = "envio" }: { variant?: Varia
         </button>
       </div>
 
-      <CtaButton onClick={() => router.push("/checkout/revisao-envio")}>
+      <CtaButton
+        onClick={() =>
+          router.push(
+            variant === "cobranca"
+              ? "/checkout/revisao-retirada"
+              : "/checkout/revisao-envio"
+          )
+        }
+      >
         Continuar
       </CtaButton>
 
