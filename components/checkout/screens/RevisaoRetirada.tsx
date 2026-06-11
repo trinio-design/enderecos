@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useCheckoutRouter } from "@/hooks/useCheckoutRouter";
+import { Pencil } from "lucide-react";
 
 import CtaButton from "../CtaButton";
 import Divider from "../Divider";
@@ -13,7 +14,6 @@ import PillButton from "../PillButton";
 import {
   BarcodeIcon,
   CreditCardIcon,
-  EditIcon,
   LockIcon,
   PixIcon,
   PlusIcon,
@@ -126,7 +126,7 @@ function PickupResponsible({ onEditClick }: { onEditClick?: () => void }) {
           onClick={onEditClick}
           aria-label="Editar responsável"
         >
-          <EditIcon size={20} className="text-black" />
+          <Pencil size={14} strokeWidth={1.8} className="text-black" />
         </button>
       </div>
     </div>
@@ -592,7 +592,7 @@ export default function RevisaoRetirada() {
                 aria-label="Editar endereço"
                 className="shrink-0"
               >
-                <EditIcon size={20} className="text-black" />
+                <Pencil size={14} strokeWidth={1.8} className="text-black" />
               </button>
             </div>
           )}

@@ -1,6 +1,15 @@
 import Link from "next/link";
-import StoreLogo from "@/components/checkout/StoreLogo";
+import { Albert_Sans } from "next/font/google";
+import { ArrowRight } from "lucide-react";
 import { getFlowId, FLOWS } from "@/lib/flows";
+import styles from "./primeira-tela.module.css";
+
+const albertSans = Albert_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
 
 function buildFlowUrl(
   flowType: "guest" | "1click",
@@ -26,57 +35,170 @@ function buildFlowUrl(
     return `/checkout/${firstStep}?${params.toString()}`;
   }
 
-  // fallback sem fluxo mapeado
   return flowType === "1click"
     ? `/checkout/otp?${params.toString()}`
     : `/checkout/identidade?${params.toString()}`;
 }
+
+const OPTIONS = [
+  {
+    flowType: "guest" as const,
+    label: "Opção 01",
+    title: "Guest",
+    desc: "Continue sem criar conta.",
+  },
+  {
+    flowType: "1click" as const,
+    label: "Opção 02",
+    title: "1-click",
+    desc: "Endereço e pagamento salvos.",
+  },
+];
 
 export default function PrimeiraTela({
   searchParams,
 }: {
   searchParams: { cep?: string; entrega?: string; pacotes?: string; _preview?: string };
 }) {
-  const guestUrl = buildFlowUrl("guest", searchParams);
-  const clickUrl = buildFlowUrl("1click", searchParams);
-
   return (
-    <main className="flex min-h-screen justify-center bg-[#f3f4f6]">
-      <div className="relative flex min-h-screen w-full max-w-[393px] flex-col bg-white shadow-sm">
-        <div className="flex flex-col gap-[120px] px-4 pt-8 pb-[120px]">
-          <StoreLogo />
-
-          <div className="flex flex-col gap-8 w-full">
-            <p className="font-bold text-[16px] leading-[24px] text-black">
-              Escolha o fluxo
-            </p>
-
-            <div className="flex flex-col gap-3 w-full">
-              <Link
-                href={guestUrl}
-                className="flex items-center justify-between w-full rounded-lg border border-gray-300 bg-white p-4 hover:border-gray-400 transition-colors"
-              >
-                <span className="font-semibold text-[14px] leading-[20px] text-black">
-                  Guest
-                </span>
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <path d="M7.5 15L12.5 10L7.5 5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </Link>
-
-              <Link
-                href={clickUrl}
-                className="flex items-center justify-between w-full rounded-lg border border-gray-300 bg-white p-4 hover:border-gray-400 transition-colors"
-              >
-                <span className="font-semibold text-[14px] leading-[20px] text-black">
-                  1-click
-                </span>
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <path d="M7.5 15L12.5 10L7.5 5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </Link>
-            </div>
+    <main
+      className={albertSans.className}
+      style={{
+        display: "flex",
+        minHeight: "100svh",
+        justifyContent: "center",
+        background: "#fff",
+      }}
+    >
+      <div
+        style={{
+          position: "relative",
+          display: "flex",
+          minHeight: "100svh",
+          width: "100%",
+          maxWidth: 375,
+          flexDirection: "column",
+          background: "#fff",
+        }}
+      >
+        {/* Top bar — indicador de carrinho à direita */}
+        <div style={{ display: "flex", justifyContent: "flex-end", padding: "28px 24px 0" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+            <span style={{ fontSize: 12, fontWeight: 300, color: "#888", lineHeight: 1.4 }}>
+              3 itens
+            </span>
+            <span style={{ fontSize: 12, fontWeight: 500, color: "#000", lineHeight: 1.4 }}>
+              R$ 1.290
+            </span>
           </div>
+        </div>
+
+        {/* Header */}
+        <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
+          <p
+            style={{
+              fontSize: 12,
+              fontWeight: 400,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              color: "#888",
+              margin: "0 0 12px",
+            }}
+          >
+            Checkout
+          </p>
+          <h1
+            style={{
+              fontSize: 28,
+              fontWeight: 700,
+              lineHeight: 1.15,
+              letterSpacing: "-0.02em",
+              color: "#000",
+              margin: 0,
+            }}
+          >
+            Como você quer continuar?
+          </h1>
+        </div>
+
+        {/* Divider */}
+        <div style={{ margin: "32px 24px 0", borderTop: "0.5px solid #e5e5e5" }} />
+
+        {/* Options */}
+        <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+          {OPTIONS.map(({ flowType, label, title, desc }) => (
+            <Link
+              key={flowType}
+              href={buildFlowUrl(flowType, searchParams)}
+              className={styles.optionRow}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "24px 0",
+                borderBottom: "0.5px solid #e5e5e5",
+                textDecoration: "none",
+              }}
+            >
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 400,
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    color: "#888",
+                  }}
+                >
+                  {label}
+                </span>
+                <span
+                  style={{
+                    fontSize: 20,
+                    fontWeight: 400,
+                    letterSpacing: "-0.01em",
+                    color: "#000",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {title}
+                </span>
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 300,
+                    lineHeight: 1.55,
+                    color: "#888",
+                  }}
+                >
+                  {desc}
+                </span>
+              </div>
+              <ArrowRight className={styles.arrow} size={16} strokeWidth={1.5} color="#000" />
+            </Link>
+          ))}
+        </div>
+
+        {/* Footer */}
+        <div
+          style={{
+            marginTop: "auto",
+            paddingBottom: 40,
+            paddingTop: 32,
+            textAlign: "center",
+          }}
+        >
+          <p
+            style={{
+              fontSize: 12,
+              fontWeight: 300,
+              letterSpacing: "0.1em",
+              color: "#999",
+              margin: 0,
+            }}
+          >
+            Compra 100% segura e protegida
+          </p>
         </div>
       </div>
     </main>
