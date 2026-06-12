@@ -423,7 +423,6 @@ export default function GuestEntrega() {
   const defaultTipo = searchParams.get("tipo") ?? (isRetiradaConfig ? "retirada" : "economica");
   const [selected, setSelected] = useState(defaultTipo);
   const [showEditDrawer, setShowEditDrawer] = useState(false);
-  const [showDetalhesDrawer, setShowDetalhesDrawer] = useState(false);
 
   function handleSelect(v: string) {
     setSelected(v);
@@ -450,14 +449,10 @@ export default function GuestEntrega() {
           selected={selected}
           setSelected={handleSelect}
           onEditResponsavel={() => setShowEditDrawer(true)}
-          onProductClick={() => setShowDetalhesDrawer(true)}
+          onProductClick={() => router.push("/checkout/detalhe-pacote")}
         />
       ) : (
         <EntregaSimples selected={selected} setSelected={handleSelect} />
-      )}
-
-      {showDetalhesDrawer && (
-        <DetalhesPacoteDrawer onClose={() => setShowDetalhesDrawer(false)} />
       )}
 
       {/* Drawer overlay — edição do responsável pela retirada */}

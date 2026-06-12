@@ -1,45 +1,89 @@
 "use client";
 
 import { useState } from "react";
-import { Package, Truck } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowLeftCircle,
+  MapPin,
+  Pencil,
+  Search,
+  Store,
+  X,
+} from "lucide-react";
 import { useCheckoutRouter } from "@/hooks/useCheckoutRouter";
 
 import CtaButton from "../CtaButton";
 import Footer from "../Footer";
 import Header from "../Header";
+import ProductThumb from "../ProductThumb";
 import SegmentToggle from "../SegmentToggle";
-import {
-  ArrowLeftCircleIcon,
-  EditIcon,
-  PinIcon,
-  SearchIcon,
-  StoreIcon,
-  WarningIcon,
-} from "../icons";
 
 // ── Retirada pill ─────────────────────────────────────────────────────────────
 
 function RetiradaPill({ label }: { label: string }) {
   return (
     <span className="inline-flex h-6 w-fit items-center gap-1 rounded-full bg-[#0a0a0a] px-2">
-      <StoreIcon size={13} className="text-white" />
+      <Store size={12} className="text-white" strokeWidth={1.8} />
       <span className="text-[12px] font-semibold text-white">{label}</span>
     </span>
   );
 }
 
-// ── Entrega pill (package icon) ───────────────────────────────────────────────
+// ── Drawer: editar responsável ────────────────────────────────────────────────
 
-function EntregaPill({ label }: { label: string }) {
+function EditarResponsavelDrawer({
+  nome,
+  onChange,
+  onClose,
+}: {
+  nome: string;
+  onChange: (v: string) => void;
+  onClose: () => void;
+}) {
+  const [value, setValue] = useState(nome);
+
   return (
-    <span className="inline-flex h-6 w-fit items-center gap-1 rounded-full bg-[#0a0a0a] px-2">
-      <Package size={12} className="text-white" strokeWidth={1.8} />
-      <span className="text-[12px] font-semibold text-white">{label}</span>
-    </span>
+    <div className="fixed inset-0 z-50 flex flex-col justify-end">
+      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
+      <div className="relative rounded-tl-[12px] rounded-tr-[12px] bg-white">
+        {/* Handle */}
+        <div className="flex items-center justify-center pb-2 pt-4">
+          <div className="h-1 w-[45px] rounded-full bg-[#e5e7eb]" />
+        </div>
+
+        <div className="flex flex-col gap-6 p-6">
+          <div className="flex items-center justify-between">
+            <p className="text-[18px] font-bold text-black">Responsável pela retirada</p>
+            <button type="button" onClick={onClose} aria-label="Fechar">
+              <X size={20} className="text-black" />
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-[12px] font-semibold text-black">Nome completo</label>
+            <input
+              type="text"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              className="h-[46px] rounded-[4px] border border-[#d1d5db] bg-[#f3f4f6] px-3 text-[14px] font-medium text-black outline-none focus:border-black"
+            />
+          </div>
+
+          <CtaButton
+            onClick={() => {
+              onChange(value);
+              onClose();
+            }}
+          >
+            Salvar
+          </CtaButton>
+        </div>
+      </div>
+    </div>
   );
 }
 
-// ── Múltiplos pacotes read-only card ─────────────────────────────────────────
+// ── Múltiplos pacotes read-only card (retirada) ──────────────────────────────
 
 function MultiplosPacotesCard() {
   return (
@@ -55,15 +99,15 @@ function MultiplosPacotesCard() {
         </div>
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-1">
-            <Truck size={14} className="text-[#374151]" strokeWidth={1.8} />
-            <span className="text-[12px] font-bold text-[#374151]">2 entregas</span>
+            <Store size={14} className="text-[#374151]" strokeWidth={1.8} />
+            <span className="text-[12px] font-bold text-[#374151]">2 retiradas</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="rounded-[4px] bg-[#d1d5db] px-1 text-[12px] font-medium leading-5 text-[#374151]">
-              1 a 2 dias úteis
+              Disponível em até 4 horas
             </span>
             <span className="rounded-[4px] bg-[#d1d5db] px-1 text-[12px] font-medium leading-5 text-[#374151]">
-              R$20,00
+              Grátis
             </span>
           </div>
         </div>
@@ -71,31 +115,29 @@ function MultiplosPacotesCard() {
 
       <div className="flex flex-col gap-6 px-4 pb-4">
         <div className="flex flex-col gap-[14px] pt-4">
-          <EntregaPill label="Entrega 1" />
+          <RetiradaPill label="Retirada 1" />
           <div className="flex items-start justify-between text-[14px] leading-5 text-black">
             <div className="flex flex-col">
-              <p className="font-bold">Frete econômico</p>
-              <p className="font-normal">Chegará até 18/09/26</p>
+              <p className="font-bold">Retirada em Loja</p>
+              <p className="font-normal">Disponível em até 4 horas</p>
             </div>
-            <p className="font-bold">R$12,90</p>
+            <p className="font-bold">Grátis</p>
           </div>
-          <img src="/tenis.jpg" alt="Produto" width={36} height={36}
-            className="h-9 w-9 rounded-[8px] border border-[#d1d5db] object-cover" />
+          <ProductThumb className="h-9 w-9 rounded-[8px] border border-[#d1d5db] object-cover" />
         </div>
 
         <div className="h-px w-full rounded-sm bg-[#d1d5db]" />
 
         <div className="flex flex-col gap-[14px]">
-          <EntregaPill label="Entrega 2" />
+          <RetiradaPill label="Retirada 2" />
           <div className="flex items-start justify-between text-[14px] leading-5 text-black">
             <div className="flex flex-col">
-              <p className="font-bold">Frete expresso</p>
-              <p className="font-normal">Chegará até 18/09/26</p>
+              <p className="font-bold">Retirada em Loja</p>
+              <p className="font-normal">Disponível em até 4 horas</p>
             </div>
-            <p className="font-bold">R$12,90</p>
+            <p className="font-bold">Grátis</p>
           </div>
-          <img src="/tenis.jpg" alt="Produto" width={36} height={36}
-            className="h-9 w-9 rounded-[8px] border border-[#d1d5db] object-cover" />
+          <ProductThumb className="h-9 w-9 rounded-[8px] border border-[#d1d5db] object-cover" />
         </div>
       </div>
     </div>
@@ -104,15 +146,14 @@ function MultiplosPacotesCard() {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-/**
- * Tela — Alterar retirada (1-click, múltiplos pacotes / 2 entregas)
- */
 export default function Checkout1clickAlterarRetirada() {
   const router = useCheckoutRouter();
   const [cep, setCep] = useState("CEP 34859-340");
+  const [responsavel, setResponsavel] = useState("Tamy Müzel");
+  const [showEditDrawer, setShowEditDrawer] = useState(false);
 
   return (
-    <div className="flex min-h-screen flex-col gap-8 px-4 py-6">
+    <div className="relative flex min-h-screen flex-col gap-8 px-4 py-6">
       <Header total="R$ 620,10" quantity={3} />
 
       <div className="flex flex-col gap-6">
@@ -122,7 +163,7 @@ export default function Checkout1clickAlterarRetirada() {
           onClick={() => router.back()}
           className="flex items-center gap-2 text-[14px] font-semibold text-black"
         >
-          <ArrowLeftCircleIcon size={24} className="text-black" />
+          <ArrowLeftCircle size={24} className="text-black" strokeWidth={1.8} />
           Voltar
         </button>
 
@@ -150,10 +191,10 @@ export default function Checkout1clickAlterarRetirada() {
               onChange={(e) => setCep(e.target.value)}
               className="flex-1 bg-transparent text-[14px] font-medium text-black outline-none"
             />
-            <SearchIcon size={20} className="shrink-0 text-black" />
+            <Search size={20} className="shrink-0 text-black" strokeWidth={1.8} />
           </label>
           <button type="button" className="flex items-center gap-2 self-start">
-            <PinIcon size={20} className="text-[#374151]" />
+            <MapPin size={20} className="text-[#374151]" strokeWidth={1.8} />
             <span className="text-[14px] font-normal text-[#374151] underline underline-offset-2">
               Usar minha localização
             </span>
@@ -172,15 +213,14 @@ export default function Checkout1clickAlterarRetirada() {
               </div>
               <p className="font-bold">Grátis</p>
             </div>
-            <img src="/tenis.jpg" alt="Produto" width={36} height={36}
-              className="h-9 w-9 rounded-[8px] border border-[#d1d5db] object-cover" />
+            <ProductThumb className="h-9 w-9 rounded-[8px] border border-[#d1d5db] object-cover" />
           </div>
 
           {/* Warning: item unavailable */}
           <div className="flex flex-col gap-3 px-4 pb-4">
             <div className="flex items-start justify-between gap-3">
               <div className="flex flex-col gap-2">
-                <WarningIcon size={16} className="text-black" />
+                <AlertTriangle size={16} className="text-black" strokeWidth={1.8} />
                 <p className="text-[12px] font-medium leading-normal text-black w-[217px]">
                   <span className="font-bold">1 item está indisponível</span>
                   {" para retirada nesta loja e será enviado com custo adicional."}
@@ -197,16 +237,20 @@ export default function Checkout1clickAlterarRetirada() {
                 Responsável pela retirada
               </p>
               <div className="flex items-center gap-2">
-                <span className="text-[14px] leading-[18px] text-black">Tamy Müzel</span>
-                <button type="button" aria-label="Editar responsável">
-                  <EditIcon size={18} className="text-black" />
+                <span className="text-[14px] leading-[18px] text-black">{responsavel}</span>
+                <button
+                  type="button"
+                  aria-label="Editar responsável"
+                  onClick={() => setShowEditDrawer(true)}
+                >
+                  <Pencil size={16} className="text-black" strokeWidth={1.8} />
                 </button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Endereço do envio (item indisponível para retirada) */}
+        {/* Endereço do envio */}
         <div className="flex items-start justify-between rounded-[4px] bg-[#f3f4f6] p-3">
           <div className="flex flex-col gap-1">
             <p className="text-[14px] font-semibold text-black">Endereço do envio</p>
@@ -214,8 +258,13 @@ export default function Checkout1clickAlterarRetirada() {
               Rua Lauro Muller, 116 - piso 3 - Lj 331 - Botafogo, Rio de Janeiro
             </p>
           </div>
-          <button type="button" onClick={() => router.push("/checkout/alterar-endereco")} aria-label="Editar endereço" className="shrink-0">
-            <EditIcon size={20} className="text-black" />
+          <button
+            type="button"
+            onClick={() => router.push("/checkout/alterar-endereco")}
+            aria-label="Editar endereço"
+            className="shrink-0"
+          >
+            <Pencil size={18} className="text-black" strokeWidth={1.8} />
           </button>
         </div>
 
@@ -223,13 +272,22 @@ export default function Checkout1clickAlterarRetirada() {
         <MultiplosPacotesCard />
       </div>
 
-      <CtaButton onClick={() => router.push("/checkout/1click-2entregas")}>
+      <CtaButton onClick={() => router.push("/checkout/1click-2retiradas")}>
         Continuar
       </CtaButton>
 
       <div className="mt-auto pt-2">
         <Footer showRecaptcha />
       </div>
+
+      {/* Drawer editar responsável */}
+      {showEditDrawer && (
+        <EditarResponsavelDrawer
+          nome={responsavel}
+          onChange={setResponsavel}
+          onClose={() => setShowEditDrawer(false)}
+        />
+      )}
     </div>
   );
 }

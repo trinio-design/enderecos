@@ -9,6 +9,7 @@ import CtaButton from "../CtaButton";
 import Footer from "../Footer";
 import FreightCard from "../FreightCard";
 import Header from "../Header";
+import ProductThumb from "../ProductThumb";
 import SegmentToggle from "../SegmentToggle";
 import { ArrowLeftCircleIcon } from "../icons";
 
@@ -64,13 +65,7 @@ function MultiplosPacotesCard() {
             </div>
             <p className="font-bold">R$12,90</p>
           </div>
-          <img
-            src="/tenis.jpg"
-            alt="Produto"
-            width={36}
-            height={36}
-            className="h-9 w-9 rounded-[8px] border border-[#d1d5db] object-cover"
-          />
+          <ProductThumb className="h-9 w-9 rounded-[8px] border border-[#d1d5db] object-cover" />
         </div>
 
         {/* Divider */}
@@ -86,13 +81,7 @@ function MultiplosPacotesCard() {
             </div>
             <p className="font-bold">R$12,90</p>
           </div>
-          <img
-            src="/tenis.jpg"
-            alt="Produto"
-            width={36}
-            height={36}
-            className="h-9 w-9 rounded-[8px] border border-[#d1d5db] object-cover"
-          />
+          <ProductThumb className="h-9 w-9 rounded-[8px] border border-[#d1d5db] object-cover" />
         </div>
       </div>
     </div>

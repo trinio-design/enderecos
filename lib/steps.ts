@@ -17,7 +17,9 @@ import GuestDados from "@/components/checkout/screens/GuestDados";
 import GuestEntrega from "@/components/checkout/screens/GuestEntrega";
 import GuestPagamento from "@/components/checkout/screens/GuestPagamento";
 import GuestRetiradaEntrega from "@/components/checkout/screens/GuestRetiradaEntrega";
+import DetalhePacote from "@/components/checkout/screens/DetalhePacote";
 import Checkout1click2Entregas from "@/components/checkout/screens/Checkout1click2Entregas";
+import Checkout1click2Retiradas from "@/components/checkout/screens/Checkout1click2Retiradas";
 import Checkout1clickAlterarFrete from "@/components/checkout/screens/Checkout1clickAlterarFrete";
 import Checkout1clickAlterarRetirada from "@/components/checkout/screens/Checkout1clickAlterarRetirada";
 
@@ -40,7 +42,9 @@ export type StepKey =
   | "guest-pagamento"
   | "guest-trocar-loja"
   | "guest-retirada-entrega"
+  | "detalhe-pacote"
   | "1click-2entregas"
+  | "1click-2retiradas"
   | "1click-alterar-frete"
   | "1click-alterar-retirada";
 
@@ -63,7 +67,9 @@ export const STEPS: Record<StepKey, ComponentType> = {
   "guest-pagamento": GuestPagamento,
   "guest-trocar-loja": TrocarLoja,
   "guest-retirada-entrega": GuestRetiradaEntrega,
+  "detalhe-pacote": DetalhePacote,
   "1click-2entregas": Checkout1click2Entregas,
+  "1click-2retiradas": Checkout1click2Retiradas,
   "1click-alterar-frete": Checkout1clickAlterarFrete,
   "1click-alterar-retirada": Checkout1clickAlterarRetirada,
 };

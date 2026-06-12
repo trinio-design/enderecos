@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useCheckoutRouter } from "@/hooks/useCheckoutRouter";
 
 import CtaButton from "../CtaButton";
 import Footer from "../Footer";
@@ -27,7 +27,7 @@ type Variant = "envio" | "cobranca";
  * variant="cobranca" → endereço de cobrança (node 4261-3423)
  */
 export default function AlterarEndereco({ variant = "envio" }: { variant?: Variant }) {
-  const router = useRouter();
+  const router = useCheckoutRouter();
   const [selected, setSelected] = useState(0);
 
   const title =
@@ -95,15 +95,7 @@ export default function AlterarEndereco({ variant = "envio" }: { variant?: Varia
         </button>
       </div>
 
-      <CtaButton
-        onClick={() =>
-          router.push(
-            variant === "cobranca"
-              ? "/checkout/revisao-retirada"
-              : "/checkout/revisao-envio"
-          )
-        }
-      >
+      <CtaButton onClick={() => router.back()}>
         Continuar
       </CtaButton>
 
